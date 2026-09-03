@@ -8,7 +8,7 @@ from analyzer import analyze_code
 from ai_mentor import explain_finding, generate_fallback_explanation
 from understanding import build_understanding_check, evaluate_understanding
 
-# Initialize environment variables[cite: 5]
+# Initialize environment variables
 load_dotenv()
 
 # -----------------------------
@@ -315,13 +315,14 @@ with col_editor:
                 with st.spinner("Analyzing Abstract Syntax Tree..."):
                     time.sleep(0.3)
                     try:
-                        analysis_result = analyze_code(current_code)[cite: 4]
+                        analysis_result = analyze_code(current_code)
                         st.session_state.analysis = analysis_result
                         st.session_state.reviewed_code = current_code
                         st.session_state.explanations.clear()
                         st.session_state.quiz_results.clear()
                         st.session_state.audit_count += 1
                         
+                        # Log audit entry
                         flag_count = len(analysis_result.get("findings", []))
                         st.session_state.audit_history.append({
                             "time": datetime.now().strftime("%H:%M:%S"),
@@ -351,7 +352,7 @@ with col_inspector:
         st.error(f"Syntax Error Intercepted: Line {analysis['syntax_error']}")
         
     else:
-        raw_findings = analysis.get("findings", [])[cite: 4]
+        raw_findings = analysis.get("findings", []) 
         findings = [f for f in raw_findings if f.get("severity") in selected_severities]
         
         high_sev = sum(1 for f in findings if f.get("severity") == "High")
@@ -365,6 +366,7 @@ with col_inspector:
         
         st.write("")
 
+        # Resolution Progress Bar
         if findings:
             passed_checks = sum(1 for idx in range(len(findings)) if st.session_state.quiz_results.get(f"{idx}_{findings[idx].get('rule_id')}"))
             progress_ratio = passed_checks / len(findings)
@@ -403,7 +405,7 @@ with col_inspector:
                     
                     with t_trace:
                         st.markdown(f"<div style='font-size: 0.8rem; color: #a1a1aa;'>Trigger Line: {finding.get('line', '?')}</div>", unsafe_allow_html=True)
-                        st.code(finding.get("snippet", ""), language="python")[cite: 4]
+                        st.code(finding.get("snippet", ""), language="python") 
                         st.markdown(f"<div style='font-size: 0.85rem; color: #d4d4d8;'>{finding.get('evidence', '')}</div>", unsafe_allow_html=True)
 
                     with t_mentor:
@@ -419,9 +421,9 @@ with col_inspector:
                                     }
                                     
                                     try:
-                                        expl = explain_finding(mapped_finding, level=difficulty)[cite: 3]
+                                        expl = explain_finding(mapped_finding, level=difficulty) 
                                     except Exception as err:
-                                        expl = generate_fallback_explanation(mapped_finding, level=difficulty, error_msg=str(err))[cite: 3]
+                                        expl = generate_fallback_explanation(mapped_finding, level=difficulty, error_msg=str(err))
                                     
                                     st.session_state.explanations[key] = expl
                                     st.rerun()
@@ -456,7 +458,7 @@ with col_inspector:
                         )
                         
                         if st.button("Submit Response", key=f"btn_chk_{key}"):
-                            correct, msg = evaluate_understanding(quiz, selected)[cite: 10]
+                            correct, msg = evaluate_understanding(quiz, selected) 
                             st.session_state.quiz_results[key] = correct
                             if correct:
                                 st.success(msg)
@@ -466,17 +468,15 @@ with col_inspector:
                         if st.session_state.quiz_results.get(key, False):
                             st.divider()
                             st.markdown("<div style='font-size: 0.85rem; font-weight: 600; color: #4ade80; margin-bottom: 4px;'>Approved Remediation Path</div>", unsafe_allow_html=True)
-                            st.info(finding.get('fix_guidance', 'Review standard protocols.'))[cite: 4]
+                            st.info(finding.get('fix_guidance', 'Review standard protocols.'))
                             
-                            # Reliable Rule-Based Patch Mapping
+                            # Auto-Apply Secure Patch Option
                             if st.button("Apply Secure Patch to Editor", key=f"patch_{key}"):
-                                if rule_id in ("SEC001", "SEC002"):
+                                if "eval(" in st.session_state.code or "sk_live_" in st.session_state.code:
                                     st.session_state.code = SECURE_1
-                                elif rule_id in ("SEC003", "QUAL001"):
+                                elif "subprocess" in st.session_state.code:
                                     st.session_state.code = SECURE_2
-                                elif rule_id == "QUAL002":
+                                elif "cart=[]" in st.session_state.code:
                                     st.session_state.code = SECURE_3
-                                else:
-                                    st.session_state.code = "# Patched version unavailable."
                                 st.session_state.analysis = None
                                 st.rerun()
