@@ -175,7 +175,7 @@ import os
 
 def process_user_data(user_input):
     # Loaded safely from runtime environment variables
-    api_key = os.getenv("AQ.Ab8RN6IC7SIugCP05CFCvZMs0t_wWVUwOYMh5SsTDkz6K8H2Ng")
+    api_key = os.getenv("API_KEY")
     
     # Safe numerical parsing instead of dynamic execution
     try:
@@ -499,6 +499,14 @@ with col_inspector:
                             st.markdown("<div style='font-size: 0.85rem; font-weight: 600; color: #38bdf8; margin-bottom: 4px;'>Approved Remediation Path</div>", unsafe_allow_html=True)
                             st.info(finding.get('fix_guidance', 'Review standard protocols.'))
                             
+                            # Render respective secure snippet so users can view or quickly copy via Streamlit code block copy button
+                            if rule_id in ("SEC001", "SEC002"):
+                                st.code(SECURE_1, language="python")
+                            elif rule_id in ("SEC003", "QUAL001"):
+                                st.code(SECURE_2, language="python")
+                            elif rule_id == "QUAL002":
+                                st.code(SECURE_3, language="python")
+
                             if st.button("Apply Secure Patch to Editor", key=f"patch_{key}"):
                                 if rule_id in ("SEC001", "SEC002"):
                                     st.session_state.code = SECURE_1
