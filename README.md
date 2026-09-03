@@ -1,3 +1,7 @@
+[![ProofLearn Audit](https://img.shields.io/badge/ProofLearn_Audit-F-critical?style=flat-and-square)](https://github.com)
+
+
+
 # ProofLearn AI 🛡️
 
 **Understand the code. Verify the issue. Fix it safely.**
