@@ -15,33 +15,37 @@ load_dotenv()
 # Enterprise Page Configuration
 # -----------------------------
 st.set_page_config(
-    page_title="ProofLearn Studio",
+    page_title="ProofLearn AI",
     page_icon=None,
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
 # -----------------------------
-# Advanced UI Injection (CSS)
+# Advanced UI Injection & Professional Palette (CSS)
 # -----------------------------
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
-    /* Global Typography & Theme */
+    /* Global Typography & Deep Obsidian Theme */
     html, body, [class*="css"] {
         font-family: 'Inter', sans-serif;
-        color: #ededed;
-        background-color: #0e0e10;
+        color: #f1f5f9;
+        background-color: #090a0f;
     }
     code, .stTextArea textarea {
         font-family: 'JetBrains Mono', monospace !important;
         font-size: 0.85rem !important;
         line-height: 1.5 !important;
-        background-color: #141416 !important;
-        color: #f3f4f6 !important;
-        border: 1px solid #27272a !important;
-        border-radius: 6px !important;
+        background-color: #0d0e12 !important;
+        color: #38bdf8 !important;
+        border: 1px solid #1e222d !important;
+        border-radius: 8px !important;
+    }
+    .stTextArea textarea:focus {
+        border-color: #6366f1 !important;
+        box-shadow: 0 0 0 1px #6366f1 !important;
     }
 
     /* Minimalist Layout Adjustments */
@@ -54,93 +58,98 @@ st.markdown("""
         max-width: 96%;
     }
 
-    /* Containers and Cards */
+    /* High-End Containers and Cards */
     div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
-        background-color: #121214;
-        border: 1px solid #27272a;
-        border-radius: 8px;
-        padding: 1rem;
+        background-color: #12141a;
+        border: 1px solid #1e222d;
+        border-radius: 10px;
+        padding: 1.25rem;
+        box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
     }
 
-    /* Metrics Styling */
+    /* Sleek Metrics Styling */
     div[data-testid="stMetric"] {
-        background: #141416;
-        border: 1px solid #27272a;
-        border-radius: 6px;
-        padding: 0.75rem 1rem;
+        background: #12141a;
+        border: 1px solid #1e222d;
+        border-radius: 8px;
+        padding: 0.85rem 1rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
     div[data-testid="stMetric"] label {
-        color: #a1a1aa !important;
-        font-size: 0.75rem !important;
+        color: #94a3b8 !important;
+        font-size: 0.7rem !important;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.08em;
     }
     div[data-testid="stMetric"] div[data-testid="stMetricValue"] {
-        color: #f4f4f5 !important;
-        font-size: 1.25rem !important;
+        color: #f8fafc !important;
+        font-size: 1.35rem !important;
         font-weight: 600;
     }
     
-    /* Tabs */
+    /* Modern Tabs */
     .stTabs [data-baseweb="tab-list"] {
         gap: 1.5rem;
-        border-bottom: 1px solid #27272a;
+        border-bottom: 1px solid #1e222d;
         background-color: transparent;
     }
     .stTabs [data-baseweb="tab"] {
         font-weight: 500;
         font-size: 0.85rem;
-        color: #a1a1aa;
+        color: #94a3b8;
         padding: 0.5rem 0rem;
         background-color: transparent !important;
     }
     .stTabs [aria-selected="true"] {
-        color: #f4f4f5 !important;
-        border-bottom: 2px solid #f4f4f5;
+        color: #38bdf8 !important;
+        border-bottom: 2px solid #38bdf8;
     }
 
-    /* Buttons */
+    /* Interactive Buttons */
     .stButton > button {
-        background-color: #18181b;
-        color: #f4f4f5;
-        border: 1px solid #27272a;
-        border-radius: 6px;
+        background-color: #161922;
+        color: #e2e8f0;
+        border: 1px solid #262b3a;
+        border-radius: 7px;
         font-weight: 500;
         font-size: 0.85rem;
-        transition: background-color 0.15s ease;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .stButton > button:hover {
-        background-color: #27272a;
-        border-color: #3f3f46;
+        background-color: #1e222d;
+        border-color: #3b82f6;
         color: #ffffff;
+        box-shadow: 0 0 12px rgba(59, 130, 246, 0.15);
     }
     button[kind="primary"] {
-        background-color: #f4f4f5 !important;
-        color: #09090b !important;
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+        color: #ffffff !important;
         font-weight: 600 !important;
         border: none !important;
+        box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35) !important;
     }
     button[kind="primary"]:hover {
-        background-color: #e4e4e7 !important;
+        background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%) !important;
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5) !important;
     }
 
-    /* Severity Badges */
+    /* Professional Severity Badges */
     .badge-high { 
-        background-color: rgba(239, 68, 68, 0.1); 
+        background-color: rgba(239, 68, 68, 0.12); 
         color: #f87171; 
-        border: 1px solid rgba(239, 68, 68, 0.2);
-        padding: 2px 8px; 
-        border-radius: 4px; 
+        border: 1px solid rgba(239, 68, 68, 0.25);
+        padding: 3px 10px; 
+        border-radius: 6px; 
         font-size: 0.7rem; 
         font-weight: 600; 
         letter-spacing: 0.05em;
     }
     .badge-med { 
-        background-color: rgba(234, 179, 8, 0.1); 
+        background-color: rgba(234, 179, 8, 0.12); 
         color: #facc15; 
-        border: 1px solid rgba(234, 179, 8, 0.2);
-        padding: 2px 8px; 
-        border-radius: 4px; 
+        border: 1px solid rgba(234, 179, 8, 0.25);
+        padding: 3px 10px; 
+        border-radius: 6px; 
         font-size: 0.7rem; 
         font-weight: 600; 
         letter-spacing: 0.05em;
@@ -249,20 +258,20 @@ with st.sidebar:
     st.divider()
     st.markdown("### Audit History Log")
     if not st.session_state.audit_history:
-        st.markdown("<div style='font-size: 0.75rem; color: #71717a;'>No prior audits recorded.</div>", unsafe_allow_html=True)
+        st.markdown("<div style='font-size: 0.75rem; color: #64748b;'>No prior audits recorded.</div>", unsafe_allow_html=True)
     else:
         for entry in reversed(st.session_state.audit_history[-5:]):
-            st.markdown(f"<div style='font-size: 0.75rem; color: #a1a1aa; border-bottom: 1px solid #27272a; padding: 4px 0;'>[{entry['time']}] Flags: {entry['flags']}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='font-size: 0.75rem; color: #94a3b8; border-bottom: 1px solid #1e222d; padding: 6px 0;'>[{entry['time']}] Flags: {entry['flags']}</div>", unsafe_allow_html=True)
 
 # -----------------------------
 # App Header
 # -----------------------------
 col_title, col_status = st.columns([3, 1])
 with col_title:
-    st.markdown("### ProofLearn Studio")
+    st.markdown("### ProofLearn AI")
     st.caption("Deterministic Code Review & Autonomous Mentorship Engine")
 with col_status:
-    st.markdown("<div style='text-align: right; padding-top: 10px;'><span style='background-color: rgba(34,197,94,0.1); color: #4ade80; border: 1px solid rgba(34,197,94,0.2); padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 500;'>System Operational</span></div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align: right; padding-top: 10px;'><span style='background-color: rgba(56,189,248,0.1); color: #38bdf8; border: 1px solid rgba(56,189,248,0.25); padding: 5px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 500;'>System Operational</span></div>", unsafe_allow_html=True)
 
 st.divider()
 
@@ -286,9 +295,9 @@ with col_editor:
     # Real-time Editor Telemetry line
     line_count = len(current_code.splitlines())
     char_count = len(current_code)
-    st.markdown(f"<div style='font-size: 0.75rem; color: #71717a; margin-top: 4px;'>Lines: {line_count} | Characters: {char_count}</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-size: 0.75rem; color: #64748b; margin-top: 6px;'>Lines: {line_count} | Characters: {char_count}</div>", unsafe_allow_html=True)
 
-    st.markdown("<div style='font-size: 0.75rem; color: #a1a1aa; margin-top: 12px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em;'>Preset Samples</div>", unsafe_allow_html=True)
+    st.markdown("<div style='font-size: 0.75rem; color: #94a3b8; margin-top: 14px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.08em;'>Preset Samples</div>", unsafe_allow_html=True)
     btn1, btn2, btn3 = st.columns(3)
     with btn1:
         if st.button("Sample 1: Sec", use_container_width=True):
@@ -322,7 +331,6 @@ with col_editor:
                         st.session_state.quiz_results.clear()
                         st.session_state.audit_count += 1
                         
-                        # Log audit entry
                         flag_count = len(analysis_result.get("findings", []))
                         st.session_state.audit_history.append({
                             "time": datetime.now().strftime("%H:%M:%S"),
@@ -346,13 +354,13 @@ with col_inspector:
     analysis = st.session_state.analysis
     
     if analysis is None:
-        st.markdown("<div style='padding: 3rem 0; text-align: center; color: #71717a; font-size: 0.9rem;'>System idle. Run an audit to initialize diagnostic trace.</div>", unsafe_allow_html=True)
+        st.markdown("<div style='padding: 4rem 0; text-align: center; color: #64748b; font-size: 0.9rem;'>System idle. Run an audit to initialize diagnostic trace.</div>", unsafe_allow_html=True)
     
     elif analysis.get("syntax_error"):
         st.error(f"Syntax Error Intercepted: Line {analysis['syntax_error']}")
         
     else:
-        raw_findings = analysis.get("findings", []) 
+        raw_findings = analysis.get("findings", [])
         findings = [f for f in raw_findings if f.get("severity") in selected_severities]
         
         high_sev = sum(1 for f in findings if f.get("severity") == "High")
@@ -366,11 +374,10 @@ with col_inspector:
         
         st.write("")
 
-        # Resolution Progress Bar
         if findings:
             passed_checks = sum(1 for idx in range(len(findings)) if st.session_state.quiz_results.get(f"{idx}_{findings[idx].get('rule_id')}"))
             progress_ratio = passed_checks / len(findings)
-            st.markdown(f"<div style='font-size: 0.75rem; color: #a1a1aa; margin-bottom: 4px; text-transform: uppercase;'>Resolution Progress ({passed_checks}/{len(findings)} Mastered)</div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='font-size: 0.75rem; color: #94a3b8; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;'>Resolution Progress ({passed_checks}/{len(findings)} Mastered)</div>", unsafe_allow_html=True)
             st.progress(progress_ratio)
             st.write("")
 
@@ -395,7 +402,7 @@ with col_inspector:
 
                 with st.container(border=True):
                     st.markdown(f"""
-                        <div style='display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;'>
+                        <div style='display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;'>
                             <span style='font-weight: 500; font-size: 0.9rem;'>{finding.get('title')}</span>
                             <span class='{badge_class}'>{sev.upper()} // {rule_id}</span>
                         </div>
@@ -404,9 +411,9 @@ with col_inspector:
                     t_trace, t_mentor, t_fix = st.tabs(["Stack Trace", "AI Mentor", "Verify & Remediate"])
                     
                     with t_trace:
-                        st.markdown(f"<div style='font-size: 0.8rem; color: #a1a1aa;'>Trigger Line: {finding.get('line', '?')}</div>", unsafe_allow_html=True)
-                        st.code(finding.get("snippet", ""), language="python") 
-                        st.markdown(f"<div style='font-size: 0.85rem; color: #d4d4d8;'>{finding.get('evidence', '')}</div>", unsafe_allow_html=True)
+                        st.markdown(f"<div style='font-size: 0.8rem; color: #94a3b8;'>Trigger Line: {finding.get('line', '?')}</div>", unsafe_allow_html=True)
+                        st.code(finding.get("snippet", ""), language="python")
+                        st.markdown(f"<div style='font-size: 0.85rem; color: #cbd5e1;'>{finding.get('evidence', '')}</div>", unsafe_allow_html=True)
 
                     with t_mentor:
                         if key not in st.session_state.explanations:
@@ -421,7 +428,7 @@ with col_inspector:
                                     }
                                     
                                     try:
-                                        expl = explain_finding(mapped_finding, level=difficulty) 
+                                        expl = explain_finding(mapped_finding, level=difficulty)
                                     except Exception as err:
                                         expl = generate_fallback_explanation(mapped_finding, level=difficulty, error_msg=str(err))
                                     
@@ -433,7 +440,7 @@ with col_inspector:
                             st.divider()
                             fb_key = f"fb_{key}"
                             if fb_key not in st.session_state.feedback:
-                                st.markdown("<div style='font-size: 0.75rem; color: #a1a1aa; margin-bottom: 4px;'>Was this explanation helpful?</div>", unsafe_allow_html=True)
+                                st.markdown("<div style='font-size: 0.75rem; color: #94a3b8; margin-bottom: 4px;'>Was this explanation helpful?</div>", unsafe_allow_html=True)
                                 fb_c1, fb_c2, fb_space = st.columns([1, 1, 3])
                                 with fb_c1:
                                     if st.button("Yes", key=f"up_{key}"):
@@ -458,7 +465,7 @@ with col_inspector:
                         )
                         
                         if st.button("Submit Response", key=f"btn_chk_{key}"):
-                            correct, msg = evaluate_understanding(quiz, selected) 
+                            correct, msg = evaluate_understanding(quiz, selected)
                             st.session_state.quiz_results[key] = correct
                             if correct:
                                 st.success(msg)
@@ -467,16 +474,17 @@ with col_inspector:
 
                         if st.session_state.quiz_results.get(key, False):
                             st.divider()
-                            st.markdown("<div style='font-size: 0.85rem; font-weight: 600; color: #4ade80; margin-bottom: 4px;'>Approved Remediation Path</div>", unsafe_allow_html=True)
+                            st.markdown("<div style='font-size: 0.85rem; font-weight: 600; color: #38bdf8; margin-bottom: 4px;'>Approved Remediation Path</div>", unsafe_allow_html=True)
                             st.info(finding.get('fix_guidance', 'Review standard protocols.'))
                             
-                            # Auto-Apply Secure Patch Option
                             if st.button("Apply Secure Patch to Editor", key=f"patch_{key}"):
-                                if "eval(" in st.session_state.code or "sk_live_" in st.session_state.code:
+                                if rule_id in ("SEC001", "SEC002"):
                                     st.session_state.code = SECURE_1
-                                elif "subprocess" in st.session_state.code:
+                                elif rule_id in ("SEC003", "QUAL001"):
                                     st.session_state.code = SECURE_2
-                                elif "cart=[]" in st.session_state.code:
+                                elif rule_id == "QUAL002":
                                     st.session_state.code = SECURE_3
+                                else:
+                                    st.session_state.code = "# Patched version unavailable."
                                 st.session_state.analysis = None
                                 st.rerun()
