@@ -1,4 +1,6 @@
 import time
+import json
+from datetime import datetime
 import streamlit as st
 from dotenv import load_dotenv
 
@@ -16,7 +18,7 @@ st.set_page_config(
     page_title="ProofLearn Studio",
     page_icon=None,
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"
 )
 
 # -----------------------------
@@ -147,7 +149,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # -----------------------------
-# Demo Snippets
+# Demo Snippets & Secure Patches
 # -----------------------------
 SNIPPET_1 = """# Demo 1: Hardcoded Secrets & Dynamic Execution (SEC001 & SEC002)
 def process_user_data(user_input):
@@ -157,6 +159,21 @@ def process_user_data(user_input):
     # Evaluate dynamic query
     query_result = eval(user_input)
     
+    return query_result
+"""
+SECURE_1 = """# Remediated Code: Secure Configuration & Parsing
+import os
+
+def process_user_data(user_input):
+    # Loaded safely from runtime environment variables
+    api_key = os.getenv("API_KEY")
+    
+    # Safe numerical parsing instead of dynamic execution
+    try:
+        query_result = int(user_input)
+    except ValueError:
+        query_result = None
+        
     return query_result
 """
 
@@ -171,6 +188,16 @@ def ping_server(ip_address):
         # Silently fails on all errors
         print("Something went wrong!")
 """
+SECURE_2 = """# Remediated Code: Safe Subprocess & Explicit Exception Handling
+import subprocess
+
+def ping_server(ip_address):
+    try:
+        # Shell execution disabled and arguments passed as an explicit list
+        subprocess.run(["ping", "-c", "4", ip_address], shell=False, check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Ping failed with exit code: {e.returncode}")
+"""
 
 SNIPPET_3 = """# Demo 3: Mutable Default Arguments (QUAL002)
 def add_item_to_cart(item, cart=[]):
@@ -178,30 +205,64 @@ def add_item_to_cart(item, cart=[]):
     cart.append(item)
     return cart
 """
+SECURE_3 = """# Remediated Code: Immutable Default Arguments
+def add_item_to_cart(item, cart=None):
+    if cart is None:
+        cart = []
+    cart.append(item)
+    return cart
+"""
 
 # -----------------------------
 # Session State Initialization
 # -----------------------------
-if "code" not in st.session_state:
-    st.session_state.code = SNIPPET_1
+if "code" not in st.session_state: st.session_state.code = SNIPPET_1
 if "analysis" not in st.session_state: st.session_state.analysis = None
 if "reviewed_code" not in st.session_state: st.session_state.reviewed_code = None
 if "explanations" not in st.session_state: st.session_state.explanations = {}
 if "quiz_results" not in st.session_state: st.session_state.quiz_results = {}
+if "audit_count" not in st.session_state: st.session_state.audit_count = 0
+if "feedback" not in st.session_state: st.session_state.feedback = {}
+if "audit_history" not in st.session_state: st.session_state.audit_history = []
+
+# -----------------------------
+# Sidebar Configuration & Telemetry
+# -----------------------------
+with st.sidebar:
+    st.markdown("### Studio Configuration")
+    difficulty = st.selectbox(
+        "Mentorship Depth",
+        ["Beginner", "Intermediate", "Advanced"]
+    )
+    
+    st.markdown("### Diagnostic Filters")
+    selected_severities = st.multiselect(
+        "Filter by Severity",
+        ["High", "Medium"],
+        default=["High", "Medium"]
+    )
+    
+    st.divider()
+    st.markdown("### Session Analytics")
+    st.metric("Total Audits Run", st.session_state.audit_count)
+    
+    st.divider()
+    st.markdown("### Audit History Log")
+    if not st.session_state.audit_history:
+        st.markdown("<div style='font-size: 0.75rem; color: #71717a;'>No prior audits recorded.</div>", unsafe_allow_html=True)
+    else:
+        for entry in reversed(st.session_state.audit_history[-5:]):
+            st.markdown(f"<div style='font-size: 0.75rem; color: #a1a1aa; border-bottom: 1px solid #27272a; padding: 4px 0;'>[{entry['time']}] Flags: {entry['flags']}</div>", unsafe_allow_html=True)
 
 # -----------------------------
 # App Header
 # -----------------------------
-col_title, col_meta = st.columns([3, 1])
+col_title, col_status = st.columns([3, 1])
 with col_title:
     st.markdown("### ProofLearn Studio")
     st.caption("Deterministic Code Review & Autonomous Mentorship Engine")
-with col_meta:
-    difficulty = st.selectbox(
-        "Mentorship Depth",
-        ["Beginner", "Intermediate", "Advanced"],
-        label_visibility="collapsed"
-    )
+with col_status:
+    st.markdown("<div style='text-align: right; padding-top: 10px;'><span style='background-color: rgba(34,197,94,0.1); color: #4ade80; border: 1px solid rgba(34,197,94,0.2); padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 500;'>System Operational</span></div>", unsafe_allow_html=True)
 
 st.divider()
 
@@ -217,12 +278,17 @@ with col_editor:
     current_code = st.text_area(
         "Code Input",
         value=st.session_state.code,
-        height=460,
+        height=430,
         label_visibility="collapsed"
     )
     st.session_state.code = current_code
 
-    st.markdown("<div style='font-size: 0.75rem; color: #a1a1aa; margin-top: 8px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em;'>Preset Samples</div>", unsafe_allow_html=True)
+    # Real-time Editor Telemetry line
+    line_count = len(current_code.splitlines())
+    char_count = len(current_code)
+    st.markdown(f"<div style='font-size: 0.75rem; color: #71717a; margin-top: 4px;'>Lines: {line_count} | Characters: {char_count}</div>", unsafe_allow_html=True)
+
+    st.markdown("<div style='font-size: 0.75rem; color: #a1a1aa; margin-top: 12px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em;'>Preset Samples</div>", unsafe_allow_html=True)
     btn1, btn2, btn3 = st.columns(3)
     with btn1:
         if st.button("Sample 1: Sec", use_container_width=True):
@@ -249,10 +315,19 @@ with col_editor:
                 with st.spinner("Analyzing Abstract Syntax Tree..."):
                     time.sleep(0.3)
                     try:
-                        st.session_state.analysis = analyze_code(current_code) 
+                        analysis_result = analyze_code(current_code)
+                        st.session_state.analysis = analysis_result
                         st.session_state.reviewed_code = current_code
                         st.session_state.explanations.clear()
                         st.session_state.quiz_results.clear()
+                        st.session_state.audit_count += 1
+                        
+                        # Log audit entry
+                        flag_count = len(analysis_result.get("findings", []))
+                        st.session_state.audit_history.append({
+                            "time": datetime.now().strftime("%H:%M:%S"),
+                            "flags": flag_count
+                        })
                         st.rerun()
                     except Exception as exc:
                         st.error(f"Kernel Error: {exc}")
@@ -271,26 +346,46 @@ with col_inspector:
     analysis = st.session_state.analysis
     
     if analysis is None:
-        st.markdown("<div style='padding: 3rem 0; text-align: color: #71717a; font-size: 0.9rem;'>System idle. Run an audit to initialize diagnostic trace.</div>", unsafe_allow_html=True)
+        st.markdown("<div style='padding: 3rem 0; text-align: center; color: #71717a; font-size: 0.9rem;'>System idle. Run an audit to initialize diagnostic trace.</div>", unsafe_allow_html=True)
     
     elif analysis.get("syntax_error"):
         st.error(f"Syntax Error Intercepted: Line {analysis['syntax_error']}")
         
     else:
-        findings = analysis.get("findings", []) 
+        raw_findings = analysis.get("findings", []) 
+        findings = [f for f in raw_findings if f.get("severity") in selected_severities]
+        
         high_sev = sum(1 for f in findings if f.get("severity") == "High")
         med_sev = sum(1 for f in findings if f.get("severity") == "Medium")
 
         t1, t2, t3, t4 = st.columns(4)
         t1.metric("Status", "Failed" if findings else "Passed")
-        t2.metric("Total Flags", len(findings))
+        t2.metric("Filtered Flags", len(findings))
         t3.metric("Critical", high_sev)
         t4.metric("Warnings", med_sev)
         
         st.write("")
 
+        # Resolution Progress Bar
+        if findings:
+            passed_checks = sum(1 for idx in range(len(findings)) if st.session_state.quiz_results.get(f"{idx}_{findings[idx].get('rule_id')}"))
+            progress_ratio = passed_checks / len(findings)
+            st.markdown(f"<div style='font-size: 0.75rem; color: #a1a1aa; margin-bottom: 4px; text-transform: uppercase;'>Resolution Progress ({passed_checks}/{len(findings)} Mastered)</div>", unsafe_allow_html=True)
+            st.progress(progress_ratio)
+            st.write("")
+
+            report_json = json.dumps(analysis, indent=2)
+            st.download_button(
+                label="Export Diagnostic Report (JSON)",
+                data=report_json,
+                file_name="prooflearn_audit_report.json",
+                mime="application/json",
+                use_container_width=True
+            )
+            st.write("")
+
         if not findings:
-            st.success("Zero deterministic violations found. AST structural analysis passed.")
+            st.success("No violations match the current filter criteria. AST checks complete.")
         else:
             for idx, finding in enumerate(findings):
                 rule_id = finding.get("rule_id", "UNKNOWN")
@@ -334,6 +429,22 @@ with col_inspector:
                                     st.rerun()
                         else:
                             st.markdown(st.session_state.explanations[key])
+                            
+                            st.divider()
+                            fb_key = f"fb_{key}"
+                            if fb_key not in st.session_state.feedback:
+                                st.markdown("<div style='font-size: 0.75rem; color: #a1a1aa; margin-bottom: 4px;'>Was this explanation helpful?</div>", unsafe_allow_html=True)
+                                fb_c1, fb_c2, fb_space = st.columns([1, 1, 3])
+                                with fb_c1:
+                                    if st.button("Yes", key=f"up_{key}"):
+                                        st.session_state.feedback[fb_key] = "Helpful"
+                                        st.rerun()
+                                with fb_c2:
+                                    if st.button("No", key=f"down_{key}"):
+                                        st.session_state.feedback[fb_key] = "Not Helpful"
+                                        st.rerun()
+                            else:
+                                st.caption(f"Feedback recorded: {st.session_state.feedback[fb_key]}")
 
                     with t_fix:
                         quiz = build_understanding_check(finding)
@@ -358,3 +469,14 @@ with col_inspector:
                             st.divider()
                             st.markdown("<div style='font-size: 0.85rem; font-weight: 600; color: #4ade80; margin-bottom: 4px;'>Approved Remediation Path</div>", unsafe_allow_html=True)
                             st.info(finding.get('fix_guidance', 'Review standard protocols.'))
+                            
+                            # Auto-Apply Secure Patch Option
+                            if st.button("Apply Secure Patch to Editor", key=f"patch_{key}"):
+                                if "eval(" in st.session_state.code or "sk_live_" in st.session_state.code:
+                                    st.session_state.code = SECURE_1
+                                elif "subprocess" in st.session_state.code:
+                                    st.session_state.code = SECURE_2
+                                elif "cart=[]" in st.session_state.code:
+                                    st.session_state.code = SECURE_3
+                                st.session_state.analysis = None
+                                st.rerun()
