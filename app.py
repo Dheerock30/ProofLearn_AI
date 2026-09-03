@@ -15,7 +15,7 @@ load_dotenv()
 # Enterprise Page Configuration
 # -----------------------------
 st.set_page_config(
-    page_title="ProofLearn AI",
+    page_title="ProofLearn Studio",
     page_icon=None,
     layout="wide",
     initial_sidebar_state="expanded"
@@ -268,7 +268,7 @@ with st.sidebar:
 # -----------------------------
 col_title, col_status = st.columns([3, 1])
 with col_title:
-    st.markdown("### ProofLearn AI")
+    st.markdown("### ProofLearn Studio")
     st.caption("Deterministic Code Review & Autonomous Mentorship Engine")
 with col_status:
     st.markdown("<div style='text-align: right; padding-top: 10px;'><span style='background-color: rgba(56,189,248,0.1); color: #38bdf8; border: 1px solid rgba(56,189,248,0.25); padding: 5px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 500;'>System Operational</span></div>", unsafe_allow_html=True)
@@ -390,6 +390,28 @@ with col_inspector:
                 use_container_width=True
             )
             st.write("")
+
+        # --- Code Health Score & Fix Effort Widget ---
+        st.divider()
+        st.markdown("<div style='font-size: 0.75rem; color: #94a3b8; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;'>Code Health & Remediation Effort</div>", unsafe_allow_html=True)
+        
+        health_score = max(0, 100 - (high_sev * 35) - (med_sev * 15))
+        est_fix_time = (high_sev * 3) + (med_sev * 1) if findings else 0
+        score_color = "#4ade80" if health_score >= 80 else ("#facc15" if health_score >= 50 else "#f87171")
+        
+        st.markdown(f"""
+            <div style='background-color: #12141a; border: 1px solid #1e222d; border-radius: 8px; padding: 14px; display: flex; justify-content: space-between; align-items: center;'>
+                <div>
+                    <div style='font-size: 0.75rem; color: #94a3b8; text-transform: uppercase;'>Calculated Health Score</div>
+                    <div style='font-size: 1.5rem; font-weight: 600; color: {score_color};'>{health_score}%</div>
+                </div>
+                <div style='text-align: right;'>
+                    <div style='font-size: 0.75rem; color: #94a3b8; text-transform: uppercase;'>Est. Remediation Time</div>
+                    <div style='font-size: 1.15rem; font-weight: 500; color: #f1f5f9;'>~{est_fix_time} mins</div>
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+        st.write("")
 
         if not findings:
             st.success("No violations match the current filter criteria. AST checks complete.")
