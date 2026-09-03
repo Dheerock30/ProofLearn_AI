@@ -175,7 +175,7 @@ import os
 
 def process_user_data(user_input):
     # Loaded safely from runtime environment variables
-    api_key = os.getenv("API_KEY")
+    api_key = os.getenv("AQ.Ab8RN6IC7SIugCP05CFCvZMs0t_wWVUwOYMh5SsTDkz6K8H2Ng")
     
     # Safe numerical parsing instead of dynamic execution
     try:
