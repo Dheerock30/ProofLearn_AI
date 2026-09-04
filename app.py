@@ -48,10 +48,11 @@ st.markdown("""
         box-shadow: 0 0 0 1px #6366f1 !important;
     }
 
-    /* Minimalist Layout Adjustments */
+    /* Minimalist Layout Adjustments (Preserving Header Toggle) */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
-    header {visibility: hidden;}
+    header {background-color: transparent !important;}
+    
     .block-container {
         padding-top: 2rem;
         padding-bottom: 2rem;
@@ -499,7 +500,6 @@ with col_inspector:
                             st.markdown("<div style='font-size: 0.85rem; font-weight: 600; color: #38bdf8; margin-bottom: 4px;'>Approved Remediation Path</div>", unsafe_allow_html=True)
                             st.info(finding.get('fix_guidance', 'Review standard protocols.'))
                             
-                            # Render respective secure snippet so users can view or quickly copy via Streamlit code block copy button
                             if rule_id in ("SEC001", "SEC002"):
                                 st.code(SECURE_1, language="python")
                             elif rule_id in ("SEC003", "QUAL001"):
